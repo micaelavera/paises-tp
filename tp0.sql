@@ -21,7 +21,7 @@ create table frontera(
 
 create table censo(
 	pais_id integer,
-	 anio integer,
+	anio integer,
 	poblacion integer
 );
 
@@ -36,6 +36,6 @@ create table continente(
 alter table pais   add constraint pais_pk    primary key (pais_id);
 
 
-alter table tabla add constraint tablaa_fk0 foreign key (algo)  references tabla  (algo);
+alter table pais add constraint pais_fk0 foreign key (continente)  references continente (continente_id);
 
 
