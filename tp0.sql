@@ -33,7 +33,7 @@ create table continente(
 
 
 
-alter table pais   add constraint pais_pk    primary key (pais_id);
+alter table pais  add constraint pais_pk    primary key (pais_id);
 
 
 alter table pais add constraint pais_fk0 foreign key (continente)  references continente (continente_id);
