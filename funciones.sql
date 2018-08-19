@@ -5,9 +5,12 @@ Es decir esta función debe retornar un número real. por ejemplo si la poblaci�
 12% anual, debería retornar 1.12
 */
 
-create or replace function get_pop_variation_rate(pais_id integer) return float as $$
-declare
+create or replace function get_pop_variation_rate(pais_id integer) returns float as $$
+declare 
+	poblacion record;
 
+begin
+	select * into poblacion from censo c where c.pais_id = pais_id order by desclimit 2;
 
 end;
 $$language plpgsql;
