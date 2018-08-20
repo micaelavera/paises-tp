@@ -28,7 +28,7 @@ create table censo(
 
 create table continente(
 	continente_id integer,
-	nombre integer
+	nombre varchar(64)
 );
 
 
@@ -36,16 +36,17 @@ create table continente(
 alter table pais add constraint pais_pk primary key (pais_id);
 alter table continente add constraint continente_pk primary key(continente_id);
 
-
-
 --FOREIGN KEYS
 --alter table pais add constraint pais_fk0 foreign key (continente_id)  references continente (continente_id);
 
 
 --LEEMOS LOS CSV
---EJEMPLO
 copy pais from '/home/lilo/Moreno-Vera-tp0/Copia de Datos_paises - Pais.csv' using delimiters ',' csv header;
 
+copy frontera from '/home/lilo/Moreno-Vera-tp0/Copia de Datos_paises - Frontera.csv' using delimiters ',' csv header;
+
+copy censo from '/home/lilo/Moreno-Vera-tp0/Copia de Datos_paises - Censo.csv' using delimiters ',' csv header;
+
+copy continente from '/home/lilo/Moreno-Vera-tp0/Copia de Datos_paises - Continente.csv' using delimiters ',' csv header;
+
 --modificar el path , y que solo tome la carpeta y no "home/lilo etc etc
-
-
