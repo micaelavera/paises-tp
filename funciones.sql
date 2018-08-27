@@ -10,15 +10,10 @@ declare
 	poblacion record;
 
 begin
-	select * into poblacion from censo c where c.pais_id = pais_id order by desclimit 2;
+--	select * into poblacion from censo c where c.pais_id = pais_id order by desclimit 2;
 
 end;
 $$language plpgsql;
-
-
-
-
-
 
 
 
@@ -26,10 +21,12 @@ $$language plpgsql;
 estimada de un continente.
 */
 
-create or replace function get_pop_by_continent() return interger? as $$
+create or replace function get_pop_by_continent() returns integer as $$
 declare
-
-
-
+	poblaciones record;
+	poblacion_estimada integer;
+begin
+	 select sum(p.poblacion) as suma_poblacion into poblaciones from pais p, continente c where p.continente_id = c.continente_id group by p.continente_id;
+	return poblaciones.suma_poblacion;
 end;
-$$languange plpgsql;
+$$language plpgsql;
