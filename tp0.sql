@@ -22,7 +22,6 @@ create table frontera(
 
 drop table if exists censo cascade;
 create table censo(
-    censo_id serial,
 	pais_id integer,
 	anio integer,
 	poblacion integer
@@ -34,20 +33,6 @@ create table continente(
 	nombre varchar(64)
 );
 
-
--- PRIMARY KEYS
-alter table pais	 add constraint pais_pk             primary key (pais_id);
-alter table continente 	 add constraint continente_pk   primary key(continente_id);
--- ver el pk de censo
-alter table censo 	 add constraint censo_pk            primary key(censo_id);
-
-
-
---FOREIGN KEYS
-alter table pais        add constraint pais_fk      foreign key (continente_id)  references continente (continente_id);
-alter table frontera    add constraint frontera_fk0 foreign key (pais_id1) references pais(pais_id);
-alter table frontera    add constraint frontera_fk1 foreign key (pais_id2) references pais(pais_id);
-
 --LEEMOS LOS CSV
 copy continente from '/home/lilo/Moreno-Vera-tp0/Datos_paises - Mica_Liz - Continente.csv' using delimiters ',' csv header;
 
@@ -56,3 +41,15 @@ copy pais from '/home/lilo/Moreno-Vera-tp0/Datos_paises - Mica_Liz - Pais.csv' u
 copy frontera from '/home/lilo/Moreno-Vera-tp0/Datos_paises - Mica_Liz - Frontera.csv' using delimiters ',' csv header;
 
 copy censo from '/home/lilo/Moreno-Vera-tp0/Datos_paises - Mica_Liz - Censo.csv' using delimiters ',' csv header;
+
+-- PRIMARY KEYS
+alter table pais	 add constraint pais_pk             primary key (pais_id);
+alter table continente 	 add constraint continente_pk   primary key(continente_id);
+alter table censo 	 add constraint censo_pk            primary key(pais_id,anio);
+alter table frontera add constraint frontera_pk primary key (pais_id1, pais_id2);
+
+--FOREIGN KEYS
+alter table pais        add constraint pais_fk      foreign key (continente_id)  references continente (continente_id);
+alter table frontera    add constraint frontera_fk0 foreign key (pais_id1) references pais (pais_id);
+alter table frontera    add constraint frontera_fk1 foreign key (pais_id2) references pais (pais_id);
+alter table censo add constraint censo_fk foreign key (pais_id) references pais (pais_id);
