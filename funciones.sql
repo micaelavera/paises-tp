@@ -13,9 +13,9 @@ declare
 begin
     select * into ultimo_censo from censo c1 where c1.pais_id= pais_id_param order by anio desc limit 1;
     select * into anteultimo_censo from censo c2 where c2.pais_id= pais_id_param order by anio desc limit 1 offset 1;
-    resul = truncate((ultimo_censo.poblacion/anteultimo_censo.poblacion),2);
-    anios_entre_censos = (ultimo_censo.anio - anteultimo_censo.anio);
-    coeficiente= power(resul,(1/anios_entre_censos))-1; 
+    resul = ultimo_censo.poblacion::float/anteultimo_censo.poblacion::float;
+    anios_entre_censos = ultimo_censo.anio - anteultimo_censo.anio;
+    coeficiente = power(resul,(1/anios_entre_censos::float))-1; 
     return coeficiente;
 end;
 $$language plpgsql;
@@ -24,7 +24,6 @@ $$language plpgsql;
 4) Crear una vista que devuelva cada país con su población según el último censo
 disponible, y la población estimada actual.
 */
-
 
 
 /*
