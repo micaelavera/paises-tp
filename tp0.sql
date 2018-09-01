@@ -34,13 +34,13 @@ create table continente(
 );
 
 --LEEMOS LOS CSV
-copy continente from '/home/lilo/Moreno-Vera-tp0/Datos_paises - Mica_Liz - Continente.csv' using delimiters ',' csv header;
+copy continente from '/home/demo/Moreno-Vera-tp0/Datos_paises - Continente.csv' using delimiters ',' csv header;
 
-copy pais from '/home/lilo/Moreno-Vera-tp0/Datos_paises - Mica_Liz - Pais.csv' using delimiters ',' csv header;
+copy pais from '/home/demo/Moreno-Vera-tp0/Datos_paises - Pais.csv' using delimiters ',' csv header;
 
-copy frontera from '/home/lilo/Moreno-Vera-tp0/Datos_paises - Mica_Liz - Frontera.csv' using delimiters ',' csv header;
+copy frontera from '/home/demo/Moreno-Vera-tp0/Datos_paises - Frontera.csv' using delimiters ',' csv header;
 
-copy censo from '/home/lilo/Moreno-Vera-tp0/Datos_paises - Mica_Liz - Censo.csv' using delimiters ',' csv header;
+copy censo from '/home/demo/Moreno-Vera-tp0/Datos_paises - Censo.csv' using delimiters ',' csv header;
 
 -- PRIMARY KEYS
 alter table pais	 add constraint pais_pk             primary key (pais_id);
