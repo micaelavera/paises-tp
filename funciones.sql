@@ -15,8 +15,8 @@ begin
     select * into anteultimo_censo from censo c2 where c2.pais_id= pais_id_param order by anio desc limit 1 offset 1;
     resul = ultimo_censo.poblacion::float/anteultimo_censo.poblacion::float;
     anios_entre_censos = ultimo_censo.anio - anteultimo_censo.anio;
-    coeficiente = power(resul,(1/anios_entre_censos::float))-1; 
-    return coeficiente;
+    coeficiente = power(resul,(1/anios_entre_censos::float)); --ver si restamos -1 o no
+    return round(coeficiente::numeric,4);
 end;
 $$language plpgsql;
 
