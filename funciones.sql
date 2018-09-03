@@ -53,8 +53,20 @@ $$language plpgsql;
 */
 
 
+--select * from frontera order by extension_km;
+
+--sale cualquier cosa 
+--select pais1.nombre as "pais_1",pais2.nombre as pais_2, f.extension_km as extension from pais pais1, pais pais2, frontera f order by f.extension_km;
+
+
+
+
 
 /*
 10) Hacer un query que retorne todos los grupos de 3 paises que limitan entre sí. Hacer este query de 2 formas: una con un producto cartesiano de 3 veces la tabla paises y luego verificar que los pares limiten entre sí mediante subqueries correlacionados con la tabla de fronteras. La otra forma es haciendo un join triple de la tabla fronteras.
 */
 
+/*
+11) crear un algún indice que acelere la búsqueda de 10
+*/
+--create index frontera_indice on frontera( pais_id1,pais_id2);
