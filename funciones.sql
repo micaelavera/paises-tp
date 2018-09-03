@@ -25,6 +25,9 @@ $$language plpgsql;
 disponible, y la población estimada actual.
 */
 
+create or replace view vista_poblaciones as(
+		select p.nombre, c.poblacion, c.anio, round(c.poblacion*(power(get_pop_variation_rate(c.pais_id),date_part('year',now())-c.anio))) as poblacion_estimada_actual,date_part('year',now()) as anio_actual from pais p, censo c where p.pais_id=c.pais_id 
+) ; 
 
 /*
 5) En el modelo de datos creado, como modelaste el atributo “cantidad de población" y que representa (actual o último censo). En tabla o tablas está ?. Está en más de una tabla ?
@@ -36,17 +39,14 @@ disponible, y la población estimada actual.
 /*
 6) Crear una función get_pop_by_continent() que devuelva la cantidad de población actual estimada de un continente.
 */
-/*
-create or replace function get_pop_by_continent(cont_id) returns integer as $$
+create or replace function get_pop_by_continent(cont_id integer) returns integer as $$
 declare
 	poblaciones record;
-	poblacion_estimada integer;
 begin
-	 select sum(p.poblacion) as suma_poblacion into poblaciones from pais p, continente c where p.continente_id = c.continente_id group by p.continente_id;
-	return poblaciones.suma_poblacion;
+	 select sum(round(ce.poblacion*(power(get_pop_variation_rate(ce.pais_id),date_part('year',now())-ce.anio)))) as poblacion_total into poblaciones from pais p, continente c, censo ce where c.continente_id=cont_id and p.continente_id = c.continente_id and p.pais_id=ce.pais_id;
+	return poblaciones.poblacion_total;
 end;
 $$language plpgsql;
-*/
 
 /*
 9) Hacer un query que obtenga la lista de pares de paises que tienen limites entre si ordenado por extension de la frontera.
