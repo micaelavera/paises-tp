@@ -39,14 +39,17 @@ create or replace view vista_poblaciones as(
 /*
 6) Crear una función get_pop_by_continent() que devuelva la cantidad de población actual estimada de un continente.
 */
-create or replace function get_pop_by_continent(cont_id integer) returns integer as $$
+/*
+create or replace function get_pop_by_continent(cont_id) returns integer as $$
 declare
 	poblaciones record;
+	poblacion_estimada integer;
 begin
-	 select sum(round(ce.poblacion*(power(get_pop_variation_rate(ce.pais_id),date_part('year',now())-ce.anio)))) as poblacion_total into poblaciones from pais p, continente c, censo ce where c.continente_id=cont_id and p.continente_id = c.continente_id and p.pais_id=ce.pais_id;
-	return poblaciones.poblacion_total;
+	 select sum(p.poblacion) as suma_poblacion into poblaciones from pais p, continente c where p.continente_id = c.continente_id group by p.continente_id;
+	return poblaciones.suma_poblacion;
 end;
 $$language plpgsql;
+*/
 
 /*
 9) Hacer un query que obtenga la lista de pares de paises que tienen limites entre si ordenado por extension de la frontera.
