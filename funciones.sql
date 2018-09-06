@@ -50,25 +50,51 @@ $$language plpgsql;
 
 /*
 9) Hacer un query que obtenga la lista de pares de paises que tienen limites entre si ordenado por extension de la frontera.
-*/
+*/\q
 
---select p1.nombre as pais_1,p2.nombre as pais_2, f.extension_km as extension from pais p1, pais p2, frontera f where f.pais_id1= p1.pais_id and f.pais_id2=p2.pais_id order by f.extension_km;
+select p1.nombre as pais_1,p2.nombre as pais_2, f.extension_km as extension 
+from pais p1, pais p2, frontera f 
+where f.pais_id1= p1.pais_id and f.pais_id2=p2.pais_id order by f.extension_km;
 
 
 /*
-10) Hacer un query que retorne todos los grupos de 3 paises que limitan entre sí. Hacer este query de 2 formas: una con un producto cartesiano de 3 veces la tabla paises y luego verificar que los pares limiten entre sí mediante subqueries correlacionados con la tabla de fronteras. La otra forma es haciendo un join triple de la tabla fronteras
+10) Hacer un query que retorne todos los grupos de 3 paises que limitan entre sí. Hacer este query de 2 formas: una con un producto cartesiano de 3 veces la tabla paises y luego verificar que los pares limiten entre sí mediante subqueries correlacionados con la tabla de fronteras. */
+---Version Liz
+select p1.nombre as pais_1, p2.nombre as pais_2,p3.nombre as pais_3 
+from  pais p1, pais p2, pais p3
+where p1.pais_id in ( --p1 con p2
+			select f1.pais_id1 from frontera f1
+		        where p1.pais_id=f1.pais_id1 and p2.pais_id= f1.pais_id2)
+and  p2.pais_id in (--p2 con p3
+			 select f2.pais_id1 from frontera f2
+			 where p2.pais_id=f2.pais_id1 and p3.pais_id=f2.pais_id2)
+and p1.pais_id in (--p1 con p3
+			 select  f3.pais_id1 from frontera f3 
+			 where p1.pais_id=f3.pais_id1 and p3.pais_id =f3.pais_id2)
+
+---- version Mica
+select distinct p1.nombre as pais1,p2.nombre as pais2,p3.nombre as pais3 
+	from pais p1, pais p2, pais p3 where exists(select 1 from frontera f1 where p1.pais_id=f1.pais_id1 
+		and  exists(select 1 from frontera f2 
+			where p2.pais_id=f2.pais_id1 
+				and exists( select 1 from frontera f3
+					 where p3.pais_id=f3.pais_id2 and f1.pais_id1=f3.pais_id1 and f2.pais_id1=f1.pais_id2 and f3.pais_id2=f2.pais_id2)));
+
+/*
+La otra forma es haciendo un join triple de la tabla fronteras
 */
 
 select p1.nombre as pais_1, p2.nombre as pais_2,p3.nombre as pais_3 
 from pais p1, pais p2, pais p3, frontera f1, frontera f2, frontera f3
-where f1.pais_id1=f3.pais_id2 
-and f1.pais_id2= f2.pais_id1 
-and f2.pais_id2= f3.pais_id1 
-and p1.pais_id =f1.pais_id1 
-and p2.pais_id= f2.pais_id1 
-and p3.pais_id=f3.pais_id2;
+ where (f1.pais_id1 = f3.pais_id1 or f3.pais_id1 = f1.pais_id1)
+ and (f2.pais_id1 = f1.pais_id2   or f1.pais_id2 = f2.pais_id1)
+ and (f3.pais_id2 = f2.pais_id2   or f2.pais_id2 = f3.pais_id2)
+ and p1.pais_id =f1.pais_id1  
+ and p2.pais_id= f2.pais_id1 
+ and p3.pais_id=f3.pais_id2;
+
 
 /*
 11) crear un algún indice que acelere la búsqueda de 10
 */
---create index frontera_indice on frontera( pais_id1,pais_id2);
+create  or replace index frontera_indice on frontera( pais_id1,pais_id2);
