@@ -26,8 +26,8 @@ disponible, y la población estimada actual.
 */
 
 create or replace view vista_poblaciones as(
-		select distinct p.nombre,ultimo_censo.anio_censo,censo_poblacion.poblacion,date_part('year',now()) as anio_actual,round(censo_poblacion.poblacion*(power(get_pop_variation_rate(p.pais_id),date_part('year',now())-censo_poblacion.anio))) as poblacion_total  from (select c.pais_id, max(anio) as anio_censo from censo c group by c.pais_id) as ultimo_censo inner join (select c1.pais_id,c1.anio,c1.poblacion from censo c1) as censo_poblacion on (ultimo_censo.pais_id=censo_poblacion.pais_id and ultimo_censo.anio_censo=censo_poblacion.anio) inner join pais p on(p.pais_id=ultimo_censo.pais_id)
-);
+		select p.nombre, c.poblacion, c.anio, round(c.poblacion*(power(get_pop_variation_rate(c.pais_id),date_part('year',now())-c.anio))) as poblacion_estimada_actual,date_part('year',now()) as anio_actual from pais p, censo c where p.pais_id=c.pais_id 
+) ; 
 
 /*
 5) En el modelo de datos creado, como modelaste el atributo “cantidad de población" y que representa (actual o último censo). En tabla o tablas está ?. Está en más de una tabla ?
