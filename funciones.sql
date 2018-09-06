@@ -10,11 +10,11 @@ declare
     coeficiente float;
     anios_entre_censos integer;
 begin
-    select * into ultimo_censo from censo c1 where c1.pais_id= pais_id_param order by anio desc limit 1;
-    select * into anteultimo_censo from censo c2 where c2.pais_id= pais_id_param order by anio desc limit 1 offset 1;
+    select * into ultimo_censo from censo c1 where c1.pais_id = pais_id_param order by anio desc limit 1;
+    select * into anteultimo_censo from censo c2 where c2.pais_id = pais_id_param order by anio desc limit 1 offset 1;
     resul = ultimo_censo.poblacion::float/anteultimo_censo.poblacion::float;
     anios_entre_censos = ultimo_censo.anio - anteultimo_censo.anio;
-    coeficiente = power(resul,(1/anios_entre_censos::float)); --ver si restamos -1 o no
+    coeficiente = power(resul,(1/anios_entre_censos::float)); 
     return round (coeficiente::numeric,4);
 end;
 $$language plpgsql;
@@ -28,11 +28,11 @@ declare
    poblacion_censada record;
    poblacion_total bigint;
 begin
-   select round(c.poblacion*(power(get_pop_variation_rate(c.pais_id),date_part('year',now())-c.anio))) as suma 
+   select round(c.poblacion*(power(get_pop_variation_rate(c.pais_id),date_part('year',now())-c.anio))) as actual
 	into poblacion_censada 
 		from censo c where c.pais_id=pais_idparam
 			order by anio desc limit 1;
-   poblacion_total = poblacion_censada.suma;
+   poblacion_total = poblacion_censada.actual;
    return poblacion_total;
 end;
 $$language plpgsql;
@@ -107,8 +107,8 @@ select distinct p1.nombre as pais1, p2.nombre as pais2, p3.nombre as pais3
 					select 1 from frontera f3
 						 where p3.pais_id = f3.pais_id2
 							 and f1.pais_id1 = f3.pais_id1 
-						 	and f2.pais_id1 = f1.pais_id2
-						 	and f3.pais_id2 = f2.pais_id2
+						 	 and f2.pais_id1 = f1.pais_id2
+						 	 and f3.pais_id2 = f2.pais_id2
 					  )
 			)
 	);
@@ -117,7 +117,7 @@ select distinct p1.nombre as pais1, p2.nombre as pais2, p3.nombre as pais3
 */
 
 --b)La otra forma es haciendo un join triple de la tabla fronteras
-
+/*
 
 select p1.nombre as pais_1, p2.nombre as pais_2,p3.nombre as pais_3 
 	from pais p1, pais p2, pais p3, frontera f1, frontera f2, frontera f3
@@ -129,6 +129,6 @@ select p1.nombre as pais_1, p2.nombre as pais_2,p3.nombre as pais_3
  		and p3.pais_id=f3.pais_id2;
 
 
-
+*/
 --11) crear un algún indice que acelere la búsqueda de 10
- create index frontera_indice on frontera(pais_id1,pais_id2);
+--create index frontera_indice on frontera(pais_id1,pais_id2);
