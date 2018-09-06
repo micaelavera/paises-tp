@@ -79,7 +79,6 @@ select p1.nombre as pais_1,p2.nombre as pais_2, f.extension_km as extension
 		where f.pais_id1 = p1.pais_id 
 			and f.pais_id2 = p2.pais_id 
 				order by f.extension_km;
-
 */
 
 --10) a) Hacer un query que retorne todos los grupos de 3 paises que limitan entre sí. Hacer este query de 2 formas: una con un producto cartesiano de 3 veces la tabla paises y luego verificar que los pares limiten entre sí mediante subqueries correlacionados con la tabla de fronteras. */
@@ -113,13 +112,13 @@ select distinct p1.nombre as pais1, p2.nombre as pais2, p3.nombre as pais3
 					  )
 			)
 	);
+
+
 */
-
-
 
 --b)La otra forma es haciendo un join triple de la tabla fronteras
 
-/*
+
 select p1.nombre as pais_1, p2.nombre as pais_2,p3.nombre as pais_3 
 	from pais p1, pais p2, pais p3, frontera f1, frontera f2, frontera f3
  		where (f1.pais_id1 = f3.pais_id1 or f3.pais_id1 = f1.pais_id1)
@@ -129,7 +128,7 @@ select p1.nombre as pais_1, p2.nombre as pais_2,p3.nombre as pais_3
  		and p2.pais_id= f2.pais_id1 
  		and p3.pais_id=f3.pais_id2;
 
-*/
+
 
 --11) crear un algún indice que acelere la búsqueda de 10
  create index frontera_indice on frontera(pais_id1,pais_id2);
