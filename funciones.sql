@@ -24,9 +24,32 @@ $$language plpgsql;
 disponible, y la población estimada actual.
 */
 
+create or replace function get_poblacion_actual(pais_idparam integer) returns bigint as $$
+declare
+   poblacion_censada record;
+   total bigint;
+begin
+   select round(c.poblacion*(power(get_pop_variation_rate(c.pais_id),date_part('year',now())-c.anio))) as suma 
+	into poblacion_censada 
+		from censo c where c.pais_id=pais_idparam
+			order by anio desc limit 1;
+   total=poblacion_censada.suma;
+   return total;
+end;
+$$language plpgsql;
+
+
 create or replace view vista_poblaciones as(
-	select distinct p.nombre,ultimo_censo.anio_censo,censo_poblacion.poblacion,date_part('year',now()) as anio_actual,round(censo_poblacion.poblacion*(power(get_pop_variation_rate(p.pais_id),date_part('year',now())-censo_poblacion.anio))) as poblacion_total  from (select c.pais_id, max(anio) as anio_censo from censo c group by c.pais_id) as ultimo_censo inner join (select c1.pais_id,c1.anio,c1.poblacion from censo c1) as censo_poblacion on (ultimo_censo.pais_id=censo_poblacion.pais_id and ultimo_censo.anio_censo=censo_poblacion.anio) inner join pais p on(p.pais_id=ultimo_censo.pais_id)
+	select distinct p.nombre, ultimo_censo.anio_censo, censo_poblacion.poblacion, date_part('year',now()) as anio_actual, 
+		get_poblacion_actual(p.pais_id) as poblacion_total  
+			from (select c.pais_id, max(anio) as anio_censo from censo c group by c.pais_id) as ultimo_censo
+			 inner join (select c1.pais_id,c1.anio,c1.poblacion from censo c1) as censo_poblacion on 					(ultimo_censo.pais_id=censo_poblacion.pais_id 
+					and ultimo_censo.anio_censo=censo_poblacion.anio) 
+						inner join pais p on(p.pais_id=ultimo_censo.pais_id)
 );
+
+
+
 
 /*
 5) En el modelo de datos creado, como modelaste el atributo “cantidad de población" y que representa (actual o último censo). En tabla o tablas está ?. Está en más de una tabla ?
@@ -42,7 +65,7 @@ create or replace function get_pop_by_continent(cont_id integer) returns bigint 
 declare
 	poblaciones record;
 begin
-	 select sum(round(ce.poblacion*(power(get_pop_variation_rate(ce.pais_id),date_part('year',now())-ce.anio)))) as poblacion_total into poblaciones from pais p, continente c, censo ce where c.continente_id=cont_id and p.continente_id = c.continente_id and p.pais_id=ce.pais_id;
+	 select sum(get_poblacion_actual(p.pais_id)) as poblacion_total into poblaciones from pais p, continente c, censo ce where c.continente_id=cont_id and p.continente_id = c.continente_id and p.pais_id=ce.pais_id;
 	return poblaciones.poblacion_total;
 end;
 $$language plpgsql;
