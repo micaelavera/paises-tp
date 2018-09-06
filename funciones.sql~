@@ -2,7 +2,6 @@
 3)Crear una función llamada get_pop_variation_rate(pais_id) que retorne el coeficiente con el que varía anualmente la población en dicho país, tomado en base a los 2 últimos censos.
 Es decir esta función debe retornar un número real. por ejemplo si la población crece a un 12% anual, debería retornar 1.12
 */
-
 create or replace function get_pop_variation_rate(pais_id_param integer) returns float as $$
 declare 
     resul float;

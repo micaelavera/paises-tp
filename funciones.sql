@@ -38,7 +38,7 @@ create or replace view vista_poblaciones as(
 /*
 6) Crear una función get_pop_by_continent() que devuelva la cantidad de población actual estimada de un continente.
 */
-create or replace function get_pop_by_continent(cont_id integer) returns integer as $$
+create or replace function get_pop_by_continent(cont_id integer) returns bigint as $$
 declare
 	poblaciones record;
 begin
